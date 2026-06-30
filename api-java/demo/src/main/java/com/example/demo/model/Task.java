@@ -1,42 +1,30 @@
 package com.example.demo.model;
 
+import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Task {
 
     private Long id;
     private String title;
-    private boolean completed;
+    private String description;
+    private TaskStatus status;
+    private LocalDateTime createAt;
+    private LocalDateTime updatedAt;
 
     public Task(){
     }
 
-    public Task(Long id, String title, boolean completed){
+    public Task(Long id, String title, String description, TaskStatus status){
         this.id = id;
         this.title = title;
-        this.completed = completed;
-    }
-    
-    public Long getId(){
-        return id;
-    }
-
-    public void setId(Long id){
-        this.id = id;
-    }
-
-    public String getTitle(){
-        return title;
-    }
-
-    public void setTitle(String title){
-        this.title = title;
-    }
-
-    public boolean getCompleted(){
-        return completed;
-    }
-
-    public void setCompleted(boolean completed){
-        this.completed = completed;
+        this.description = description;
+        this.status = status;
+        this.createAt = LocalDateTime.now();
     }
 
 }
