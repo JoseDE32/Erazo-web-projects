@@ -19,7 +19,14 @@ public class TaskService {
         );
 
         tasks.add(
-                new Task(2L, "Aprender SpringBoot", "Iniciar todo", TaskStatus.TODO)
+                new Task(2L, "Aprender SpringBoot", "Iniciar todo", TaskStatus.IN_PROGRESS)
+        );
+        tasks.add(
+                new Task(3L, "Aprender Angular", "Iniciar todo", TaskStatus.COMPLETED)
+        );
+
+        tasks.add(
+                new Task(4L, "Aprender Portuguese", "Iniciar todo", TaskStatus.CANCELLED)
         );
     }
 

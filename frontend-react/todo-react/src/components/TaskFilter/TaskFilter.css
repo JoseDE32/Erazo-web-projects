@@ -1,0 +1,29 @@
+.horizontal-slider {
+    width: 100%;
+    height: 12px;
+}
+
+.track {
+    top: 5px;
+    height: 4px;
+    background: #dee2e6;
+    border-radius: 10px;
+}
+
+.track.track-1 {
+    background: #0d6efd;
+}
+
+.thumb {
+    cursor: pointer;
+    background: white;
+    border: 2px solid #0d6efd;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: -4px;
+}
+
+.thumb:focus {
+    outline: none;
+}
