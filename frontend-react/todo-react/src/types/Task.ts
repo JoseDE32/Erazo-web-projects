@@ -7,6 +7,21 @@ export interface Task{
     updatedAt?: Date;
 }
 
+export interface FilterSortTask{
+    title?: string;
+    description?: string;
+    titleAndDescription?: string;
+    status?: TaskStatus[];
+    createdFrom?: Date;
+    createdTo?: Date;
+    updatedFrom?: Date;
+    updatedTo?: Date;
+    page?: number;
+    size?: number;
+    sortBy?: string;
+    direction?: string;
+}
+
 export interface CreateUpdateTask{
     title?: string;
     description?: string;

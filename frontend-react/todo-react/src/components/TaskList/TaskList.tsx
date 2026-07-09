@@ -12,8 +12,8 @@ import TaskFilter from '../TaskFilter/TaskFilter';
 
 const TaskList = () => {
 
-  const [TaskListToShow, setTaskListToShow] = useState<Task[]>([]);
-  const [showAddTaskForm, setShowAddTaskForm] = useState(false);
+    const [TaskListToShow, setTaskListToShow] = useState<Task[]>([]);
+    const [showAddTaskForm, setShowAddTaskForm] = useState(false);
 
     const updateTaskList = async () => {
         const tasks = await getAllTasks();
@@ -42,14 +42,14 @@ const TaskList = () => {
             const tasks = await getAllTasks();
             setTaskListToShow(tasks);
         };
-
+        
         loadTasks();
     }, []);
 
     return (
         <Row>
             <Col xs={12}>
-                <TaskFilter/>
+                <TaskFilter onFilter={setTaskListToShow}/>
             </Col>
           <Col xs={12}>
             <Button

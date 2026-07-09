@@ -5,13 +5,38 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import { TaskStatus } from '../../types/Task';
 import ReactSlider from 'react-slider';
+import { postFilteredSortedTasks } from '../../services/taskService';
 import "./TaskFilter.css";
+import Button from 'react-bootstrap/esm/Button';
 
-function TaskFilter() {
+interface TaskFilterProps {
+    onFilter: (tasks: Task[]) => void;
+}
 
+const TaskFilter = ({ onFilter }: TaskFilterProps) => {
+
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [status, setStatus] = useState<TaskStatus[]>([]);
+    const [titleAndDescription, setTitleAndDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [range, setRange] = useState<[number, number]>([20, 80]);
+
+    const handleFilter = async () => {
+        const filterSortTask = {
+            title: title || undefined,
+            description: description || undefined,
+            titleAndDescription: titleAndDescription || undefined,
+            status: status,
+            createdFrom: startDate ? new Date(startDate) : undefined,
+            createdTo: endDate ? new Date(endDate) : undefined,
+        };
+        console.log('FilterSortTask: ', filterSortTask);
+        const tasks = await postFilteredSortedTasks(filterSortTask);
+        console.log('Filtered Tasks: ', tasks.content);
+        onFilter(tasks.content);
+    };
 
     return (
         <Form>
@@ -21,8 +46,9 @@ function TaskFilter() {
                 <Form.Control
                     required
                     type="text"
-                    placeholder="First name"
-                    defaultValue="Mark"
+                    placeholder="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                 />
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                 </Form.Group>
@@ -31,8 +57,9 @@ function TaskFilter() {
                 <Form.Control
                     required
                     type="text"
-                    placeholder="Last name"
-                    defaultValue="Otto"
+                    placeholder="Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                 </Form.Group>
@@ -55,18 +82,32 @@ function TaskFilter() {
             <Row className="mb-3">
                 <Form.Group as={Col} md="6" controlId="validationCustom03">
                 <Form.Label>Title and Description</Form.Label>
-                <Form.Control type="text" placeholder="City" required />
+                <Form.Control 
+                    type="text" 
+                    placeholder="Title and Description" 
+                    value={titleAndDescription} 
+                    onChange={(e) => setTitleAndDescription(e.target.value)} 
+                />
                 <Form.Control.Feedback type="invalid">
                     Please provide a valid argument.
                 </Form.Control.Feedback>
                 </Form.Group>
             </Row>
+
             <Form.Group className="mb-3">
-                {Object.values(TaskStatus).map((status) => (
+                {Object.values(TaskStatus).map((taskStatus) => (
                     <Form.Check
-                        key={status}
-                        label={status}
-                        value={status}
+                        key={taskStatus}
+                        type="checkbox"
+                        label={taskStatus}
+                        checked={status.includes(taskStatus)}
+                        onChange={(e) => {
+                            if (e.target.checked) {
+                                setStatus([...status, taskStatus]);
+                            } else {
+                                setStatus(status.filter((s) => s !== taskStatus));
+                            }
+                        }}
                     />
                 ))}
             </Form.Group>
@@ -114,6 +155,10 @@ function TaskFilter() {
                     <span>Fin: {range[1]}</span>
                 </div>
             </Form.Group>
+
+            <Button variant="primary" onClick={handleFilter}>
+                Filtrar
+            </Button>
         </Form>
     );
 }

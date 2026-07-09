@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { CreateUpdateTask, Task } from '../types/Task';
+import type { CreateUpdateTask, FilterSortTask, Task } from '../types/Task';
 
 const api = axios.create({
   baseURL: 'http://localhost:8082/tasks',
@@ -25,6 +25,16 @@ export const getTaskById = async (id: number): Promise<Task | null> => {
   } catch (error) {
     console.error(error);
     return null;
+  }
+};
+
+export const postFilteredSortedTasks = async (filterSortTask: Partial<Omit<FilterSortTask, never>>): Promise<Task[]> => {
+  try {
+    const response = await api.post<Task[]>('/postPaginationFilterSort', filterSortTask );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };
 
