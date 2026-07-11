@@ -5,8 +5,8 @@ import Card from 'react-bootstrap/Card';
 import { Row, Col } from 'react-bootstrap';
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
 import TaskForm from '../TaskForm/TaskForm';
+import { useTaskCard } from './useTaskCard';
 
 interface TaskCardProps {
     task: Task;
@@ -17,26 +17,12 @@ interface TaskCardProps {
 
 const TaskCard = ({ task, onStatusChange, onDelete, handleReloadList }: TaskCardProps) => {
 
-    const [showEditTaskForm, setShowEditTaskForm] = useState(false);
-    const onOpenCloseAddTaskForm = () => {
-        setShowEditTaskForm(!showEditTaskForm);
-    };
+    const {
+        showEditTaskForm,
+        onOpenCloseAddTaskForm,
+        getStatusText
+    } = useTaskCard();
 
-    const getStatusText = (status: string) => {
-        switch (status) {
-            case 'TODO':
-                return 'Todo';
-            case 'IN_PROGRESS':
-                return 'In Progress';
-            case 'COMPLETED':
-                return 'Completed';
-            case 'CANCELLED':
-                return 'Cancelled';
-            default:
-                return '';
-        }
-    };
-    
     return (
     <Card>
       <Card.Body>

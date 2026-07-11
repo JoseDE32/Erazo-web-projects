@@ -1,42 +1,44 @@
-import { useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import { TaskStatus } from '../../types/Task';
 import ReactSlider from 'react-slider';
-import { postFilteredSortedTasks } from '../../services/taskService';
 import "./TaskFilter.css";
-import Button from 'react-bootstrap/esm/Button';
+import { useTaskFilter } from './useTaskFilter';
+import type { FilterSortTask } from '../../types/Task';
 
 interface TaskFilterProps {
-    onFilter: (tasks: Task[]) => void;
+    onFilter: (filters: Partial<FilterSortTask>) => void;
 }
 
 const TaskFilter = ({ onFilter }: TaskFilterProps) => {
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [status, setStatus] = useState<TaskStatus[]>([]);
-    const [titleAndDescription, setTitleAndDescription] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [range, setRange] = useState<[number, number]>([20, 80]);
+    const {
 
-    const handleFilter = async () => {
-        const filterSortTask = {
-            title: title || undefined,
-            description: description || undefined,
-            titleAndDescription: titleAndDescription || undefined,
-            status: status,
-            createdFrom: startDate ? new Date(startDate) : undefined,
-            createdTo: endDate ? new Date(endDate) : undefined,
-        };
-        console.log('FilterSortTask: ', filterSortTask);
-        const tasks = await postFilteredSortedTasks(filterSortTask);
-        console.log('Filtered Tasks: ', tasks.content);
-        onFilter(tasks.content);
-    };
+        title,
+        setTitle,
+
+        description,
+        setDescription,
+
+        status,
+
+        titleAndDescription,
+        setTitleAndDescription,
+
+        startDate,
+        setStartDate,
+
+        endDate,
+        setEndDate,
+
+        range,
+        setRange,
+
+        handleStatusChange,
+
+    } = useTaskFilter({ onFilter });
 
     return (
         <Form>
@@ -44,7 +46,6 @@ const TaskFilter = ({ onFilter }: TaskFilterProps) => {
                 <Form.Group as={Col} md="4" controlId="validationCustom01">
                 <Form.Label>Tilte</Form.Label>
                 <Form.Control
-                    required
                     type="text"
                     placeholder="Title"
                     value={title}
@@ -55,7 +56,6 @@ const TaskFilter = ({ onFilter }: TaskFilterProps) => {
                 <Form.Group as={Col} md="4" controlId="validationCustom02">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
-                    required
                     type="text"
                     placeholder="Description"
                     value={description}
@@ -71,7 +71,6 @@ const TaskFilter = ({ onFilter }: TaskFilterProps) => {
                     type="text"
                     placeholder="Username"
                     aria-describedby="inputGroupPrepend"
-                    required
                     />
                     <Form.Control.Feedback type="invalid">
                     Please choose a username.
@@ -101,13 +100,9 @@ const TaskFilter = ({ onFilter }: TaskFilterProps) => {
                         type="checkbox"
                         label={taskStatus}
                         checked={status.includes(taskStatus)}
-                        onChange={(e) => {
-                            if (e.target.checked) {
-                                setStatus([...status, taskStatus]);
-                            } else {
-                                setStatus(status.filter((s) => s !== taskStatus));
-                            }
-                        }}
+                        onChange={(e) =>
+                            handleStatusChange(taskStatus, e.target.checked)
+                        }
                     />
                 ))}
             </Form.Group>
@@ -155,10 +150,6 @@ const TaskFilter = ({ onFilter }: TaskFilterProps) => {
                     <span>Fin: {range[1]}</span>
                 </div>
             </Form.Group>
-
-            <Button variant="primary" onClick={handleFilter}>
-                Filtrar
-            </Button>
         </Form>
     );
 }
